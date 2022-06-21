@@ -3,10 +3,11 @@ import {initDB} from "./app/helpers/dbHelper";
 import apiRouter from "./app/router"
 import * as bodyParser from "body-parser";
 import * as cors from 'cors';
-
+import * as cookieParser from "cookie-parser";
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 app.use('/api', apiRouter);
 
