@@ -3,3 +3,7 @@ export interface UserDto {
   username: string;
   password: string;
 }
+export interface UserLoginDto {
+  username: string;
+  password: string;
+}
