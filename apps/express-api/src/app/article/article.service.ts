@@ -1,5 +1,6 @@
 import {ArticleDto} from "./article.model";
 import {Article, IArticle} from "./article.schema";
+import validateSlug from "../helpers/validateSlug";
 
 export class ArticleService {
 
@@ -23,6 +24,9 @@ export class ArticleService {
   }
 
   static async create(article: ArticleDto): Promise<ArticleDto> {
+    if (!validateSlug(article.slug)) {
+      throw new Error('Article slug isn\'t valid');
+    }
     const newArticle: IArticle | void = await Article.create(article).catch(console.log);
     if (newArticle) {
       return {id: newArticle?.id, title: newArticle?.title, slug: newArticle?.slug, published_at: newArticle?.published_at};

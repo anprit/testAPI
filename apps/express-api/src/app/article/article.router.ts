@@ -1,22 +1,10 @@
 import * as express from 'express';
 const articleRouter = express.Router();
-import {ArticleService} from './article.service';
+import {ArticleController} from './article.controller';
 
-articleRouter.get('/', async (req, res) => {
-  console.log(await ArticleService.getAll())
-  res.status(200).json(await ArticleService.getAll());
-});
-
-articleRouter.get('/:id', async (req, res) => {
-  res.status(200).json(await ArticleService.get(req.params?.id));
-});
-
-articleRouter.post('/', async (req, res) => {
-  res.status(200).json(await ArticleService.create(req.body));
-});
-
-articleRouter.delete('/:id', async (req, res) => {
-  res.status(200).json(await ArticleService.delete(req.params.id));
-});
+articleRouter.get('/', ArticleController.getAll);
+articleRouter.post('/', ArticleController.create);
+articleRouter.get('/:id', ArticleController.get);
+articleRouter.delete('/:id', ArticleController.delete);
 
 export default articleRouter;
