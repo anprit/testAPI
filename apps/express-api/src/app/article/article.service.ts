@@ -1,6 +1,7 @@
-import {ArticleDto} from "./article.model";
+import {ArticleDto, ArticlePaginationDto} from "./article.model";
 import {Article, IArticle} from "./article.schema";
 import validateSlug from "../helpers/validateSlug";
+import {PaginationModel} from "mongoose-paginate-ts";
 
 export class ArticleService {
 
@@ -19,6 +20,38 @@ export class ArticleService {
     const article: IArticle | void = await Article.findOne({id}).catch(console.log);
     if (article) {
       return {id: article.id, title: article.title, slug: article.slug, published_at: article.published_at}
+    }
+    return null
+  }
+
+  static async published(limit: string, page: string): Promise<ArticlePaginationDto> {
+    const pagLimit = limit ? limit : 10;
+    const pagPage = page ? page : 1;
+
+    const paginationOptions = {
+      query: {published_at: {$lte: new Date()}},
+      limit: pagLimit,
+      page: pagPage
+    }
+    const articles: PaginationModel<IArticle> | void = await Article.paginate(paginationOptions).catch(console.log);
+
+    if (articles && articles?.docs.length) {
+      return {
+        data: articles.docs.map((articles: IArticle) => ({
+          id: articles.id,
+          title: articles.title,
+          slug: articles.slug,
+          published_at: articles.published_at
+        })),
+        metadata: {
+          totalDocs: articles.totalDocs,
+          limit: articles.limit,
+          totalPages: articles.totalPages,
+          page: articles.page,
+          prevPage: articles.prevPage,
+          nextPage: articles.nextPage,
+        }
+      }
     }
     return null
   }

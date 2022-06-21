@@ -20,6 +20,15 @@ export class ArticleController {
     }
   }
 
+  static async published(req, res) {
+    try {
+      return res.status(200).json(await ArticleService.published(req.query?.limit, req.query?.page));
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({message: err.message});
+    }
+  }
+
   static async create(req, res) {
     try {
       return res.status(200).json(await ArticleService.create(req.body));
