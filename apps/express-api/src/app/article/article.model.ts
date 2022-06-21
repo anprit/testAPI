@@ -3,6 +3,7 @@ export interface ArticleDto {
   title: string;
   slug: string;
   published_at: Date;
+  private: boolean;
 }
 
 export interface ArticlePaginationDto {

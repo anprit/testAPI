@@ -5,21 +5,33 @@ import {PaginationModel} from "mongoose-paginate-ts";
 
 export class ArticleService {
 
-  static async getAll(): Promise<ArticleDto[]> {
-    const articles: IArticle[] | void = await Article.find().catch(console.log);
+  static async getAll(showHidedRecords): Promise<ArticleDto[]> {
+    const options = {
+      private: false
+    };
+    options.private = !!showHidedRecords;
+
+    const articles: IArticle[] | void = await Article.find(options).catch(console.log);
 
     return (articles || []).map((articles: IArticle) => ({
       id: articles.id,
       title: articles.title,
       slug: articles.slug,
-      published_at: articles.published_at
+      published_at: articles.published_at,
+      private: articles.private
     }))
   }
 
   static async get(id: string): Promise<ArticleDto> {
     const article: IArticle | void = await Article.findOne({id}).catch(console.log);
     if (article) {
-      return {id: article.id, title: article.title, slug: article.slug, published_at: article.published_at}
+      return {
+        id: article.id,
+        title: article.title,
+        slug: article.slug,
+        published_at: article.published_at,
+        private: article.private
+      }
     }
     return null
   }
@@ -41,7 +53,8 @@ export class ArticleService {
           id: articles.id,
           title: articles.title,
           slug: articles.slug,
-          published_at: articles.published_at
+          published_at: articles.published_at,
+          private: articles.private
         })),
         metadata: {
           totalDocs: articles.totalDocs,
@@ -62,7 +75,13 @@ export class ArticleService {
     }
     const newArticle: IArticle | void = await Article.create(article).catch(console.log);
     if (newArticle) {
-      return {id: newArticle?.id, title: newArticle?.title, slug: newArticle?.slug, published_at: newArticle?.published_at};
+      return {
+        id: newArticle?.id,
+        title: newArticle?.title,
+        slug: newArticle?.slug,
+        published_at: newArticle?.published_at,
+        private: newArticle.private
+      };
     }
     return null;
   }

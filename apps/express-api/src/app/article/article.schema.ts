@@ -6,6 +6,7 @@ export interface IArticle extends Document {
   title: string;
   slug: string;
   published_at: Date;
+  private: boolean;
 }
 
 const ArticleSchema = new Schema<IArticle>({
@@ -13,6 +14,7 @@ const ArticleSchema = new Schema<IArticle>({
   title: {type: String, required: true},
   slug: {type: String, required: true},
   published_at: {type: Date, default: null},
+  private: {type: Boolean, default: false},
 });
 
 ArticleSchema.plugin(mongoosePagination);
